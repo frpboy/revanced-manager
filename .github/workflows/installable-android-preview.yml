@@ -42,6 +42,14 @@ jobs:
           cache: true
       - name: Install code-generation dependencies
         run: npm ci
+      - name: Configure authenticated Git dependency access
+        env:
+          GITHUB_DEPENDENCY_TOKEN: ${{ secrets.REPOSITORY_PUSH_ACCESS }}
+        shell: bash
+        run: |
+          if [[ -n "$GITHUB_DEPENDENCY_TOKEN" ]]; then
+            git config --global url."https://x-access-token:${GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://github.com/"
+          fi
       - name: Install Flutter dependencies
         run: flutter pub get
       - name: Generate translations
